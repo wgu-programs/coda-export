@@ -1,6 +1,11 @@
-const fetch = require('node-fetch');
-const fs = require('fs');
-const path = require('path');
+import fetch from 'node-fetch';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const CODA_API_KEY = process.env.CODA_API_KEY;
 const DOC_ID = '_d1s_ZG0bmZ4';
@@ -29,7 +34,7 @@ async function exportCodaDocument() {
     const pageData = await fetchCodaData(pageUrl, headers);
     const markdownContent = `# ${pageName}\n\n${pageData.content}`;
 
-    const outputPath = path.join('exports', `${pageName}.md`);
+    const outputPath = path.join(__dirname, '../exports', `${pageName}.md`);
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, markdownContent);
   }
