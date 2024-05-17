@@ -40,6 +40,7 @@ async function exportCodaDocument() {
   }
 }
 
+console.log('Current directory:', process.cwd());
 exportCodaDocument()
   .then(() => console.log('Export complete'))
   .catch(err => console.error('Error exporting document:', err));
