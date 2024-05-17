@@ -1,10 +1,9 @@
-name: Reusable Export Coda Document to Markdown
+name: Export Coda Document to Markdown
 
 on:
   workflow_call:
     inputs:
       docID:
-        description: 'The ID of the Coda document to export'
         required: true
         type: string
     secrets:
@@ -12,32 +11,32 @@ on:
         required: true
 
 jobs:
-  export-coda:
+  export-coda-markdown:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Install Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
+      - name: Log current directory
+        run: pwd
 
-    - name: Log current directory
-      run: pwd
+      - name: List files in the current directory
+        run: ls -al
 
-    - name: Install dependencies
-      run: npm install node-fetch
+      - name: List files in the scripts directory
+        run: ls -al ./scripts
 
-    - name: Retrieve Coda Document and Export to Markdown
-      env:
-        CODA_API_KEY: ${{ secrets.CODA_API_KEY }}
-        DOC_ID: ${{ inputs.docID }}
-      run: node --experimental-modules scripts/exportCodaToMarkdown.mjs
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16' # Specify the Node.js version you need
 
-    - name: Upload Markdown Artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: coda-markdown-exports
-        path: exports/
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run exportCodaToMarkdown script
+        run: node --experimental-modules ./scripts/exportCodaToMarkdown.mjs
+        env:
+          CODA_API_KEY: ${{ secrets.CODA_API_KEY }}
+          DOC_ID: ${{ inputs.docID }}
