@@ -24,7 +24,7 @@ jobs:
     - name: Retrieve Coda Document and Export to Markdown
       env:
         CODA_API_KEY: ${{ secrets.CODA_API_KEY }}
-      run: node scripts/exportCodaToMarkdown.js
+      run: node scripts/exportCodaToMarkdown.mjs
 
     - name: Upload Markdown Artifacts
       uses: actions/upload-artifact@v2
