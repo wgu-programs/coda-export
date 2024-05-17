@@ -24,6 +24,9 @@ jobs:
       with:
         node-version: '16'
 
+    - name: Log current directory
+      run: pwd
+
     - name: Install dependencies
       run: npm install node-fetch
 
