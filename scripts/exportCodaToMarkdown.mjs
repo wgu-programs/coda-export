@@ -34,7 +34,7 @@ async function exportCodaDocument() {
     const pageData = await fetchCodaData(pageUrl, headers);
     const markdownContent = `# ${pageName}\n\n${pageData.content}`;
 
-    const outputPath = path.join(__dirname, '../exports', `${pageName}.md`);
+    const outputPath = path.join(__dirname, './exports', `${pageName}.md`);
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, markdownContent);
   }
