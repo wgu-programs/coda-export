@@ -25,7 +25,7 @@ async function exportCodaDocument() {
   };
 
   const doc = await fetchCodaData(API_URL, headers);
-
+  console.log(doc);
   const pages = doc.sections;
   for (const page of pages) {
     const pageId = page.id;
