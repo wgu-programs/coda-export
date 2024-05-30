@@ -1,4 +1,4 @@
-# .github/workflows/export-coda-markdown.yml
+# coda-export/.github/workflows/export-coda-markdown.yml
 name: Export Coda Document to Markdown
 
 on:
