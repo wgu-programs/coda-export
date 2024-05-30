@@ -1,5 +1,6 @@
 # coda-export/.github/workflows/export-coda-markdown.yml
 name: Export Coda Document to Markdown
+
 on:
   workflow_call:
     inputs:
@@ -16,22 +17,13 @@ jobs:
 
     steps:
       - name: Checkout export-coda-markdown repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: wgu-programs/coda-export
           ref: main
 
-      - name: Log current directory
-        run: pwd
-
-      - name: List all files in the repository
-        run: ls -al ${{ github.workspace }}
-
-      - name: List files in the scripts directory
-        run: ls -al ./scripts
-
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '20' # Specify the Node.js version you need
 
