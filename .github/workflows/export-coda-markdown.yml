@@ -22,10 +22,19 @@ jobs:
           repository: wgu-programs/coda-export
           ref: main
 
+      - name: Log current directory
+        run: pwd
+
+      - name: List all files in the repository
+        run: ls -al ${{ github.workspace }}
+
+      - name: List files in the scripts directory
+        run: ls -al ./scripts
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # Specify the Node.js version you need
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
