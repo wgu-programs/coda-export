@@ -1,4 +1,4 @@
-# export-coda-markdown.yml
+# .github/workflows/export-coda-markdown.yml
 name: Export Coda Document to Markdown
 
 on:
@@ -22,14 +22,11 @@ jobs:
       - name: Log current directory
         run: pwd
 
-      - name: List files in the current directory
-        run: ls -al
+      - name: List all files in the repository
+        run: ls -al ${{ github.workspace }}
 
       - name: List files in the scripts directory
         run: ls -al ./scripts
-
-      - name: Log environment variables (for debugging, remove in production)
-        run: echo "DOC_ID=${{ inputs.docID }} CODA_API_KEY=${{ secrets.CODA_API_KEY }}"
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
