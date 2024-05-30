@@ -28,7 +28,6 @@ async function exportCodaDocument() {
 
 	const pages = doc.items;
 	for (const page of pages) {
-		s;
 		const pageId = page.id;
 		const pageName = page.name;
 		const pageUrl = `${API_URL}/pages/${pageId}`;
