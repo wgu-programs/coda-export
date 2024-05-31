@@ -21,7 +21,7 @@ async function fetchCodaData(url, headers) {
 }
 
 async function fetchPageExportUrl(pageId, headers) {
-    const exportUrl = `https://coda.io/apis/v1/docs/${DOC_ID}/pages/${pageId}/content/export`;
+    const exportUrl = `https://coda.io/apis/v1/docs/${DOC_ID}/pages/${pageId}/export`;
     const response = await fetch(exportUrl, {
         method: 'POST',
         headers,
