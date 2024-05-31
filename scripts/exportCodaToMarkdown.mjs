@@ -21,11 +21,12 @@ async function fetchCodaData(url, headers) {
 }
 
 async function fetchPageExportUrl(pageId, headers) {
-    const exportUrl = `https://coda.io/apis/v1/docs/${DOC_ID}/pages/${pageId}/export`;
+    const exportUrl = `https://coda.io/apis/v1/docs/${DOC_ID}/pages/${pageId}/content/export`;
+    
+    console.log(exportUrl);
     const response = await fetch(exportUrl, {
         method: 'POST',
-        headers,
-        body: { outputFormat: 'markdown' },
+        headers
     });
     if (!response.ok) {
         console.error(`Error initiating export for page ${pageId}:`, response.statusText);
@@ -56,7 +57,7 @@ async function exportCodaDocument() {
     const pagesData = await fetchCodaData(API_URL, headers);
     const pages = pagesData.items;
 
-    console.log(pages);
+    // console.log(pages);
     
     for (const page of pages) {
         const pageId = page.id;
@@ -83,6 +84,7 @@ async function exportCodaDocument() {
             console.log(`Exported page ${pageName} to ${outputPath}`);
         } catch (error) {
             console.error(`Error exporting page ${pageName}:`, error);
+            process.exit(1); // Exit the script if an error occurs
         }
     }
 }
@@ -90,4 +92,7 @@ async function exportCodaDocument() {
 console.log('Current directory:', process.cwd());
 exportCodaDocument()
     .then(() => console.log('Export complete'))
-    .catch((err) => console.error('Error exporting document:', err));
+    .catch((err) => {
+        console.error('Error exporting document:', err);
+        process.exit(1); // Exit the script if an error occurs
+    });
