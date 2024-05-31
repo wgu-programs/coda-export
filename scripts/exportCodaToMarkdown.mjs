@@ -55,6 +55,8 @@ async function exportCodaDocument() {
     const pagesData = await fetchCodaData(API_URL, headers);
     const pages = pagesData.items;
 
+    console.log(pages);
+    
     for (const page of pages) {
         const pageId = page.id;
         const pageName = page.name;
