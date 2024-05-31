@@ -20,31 +20,67 @@ async function fetchCodaData(url, headers) {
     return response.json();
 }
 
+async function fetchPageExportUrl(pageId, headers) {
+    const exportUrl = `https://coda.io/apis/v1/docs/${DOC_ID}/pages/${pageId}/content/export`;
+    const response = await fetch(exportUrl, {
+        method: 'POST',
+        headers
+    });
+    if (!response.ok) {
+        console.error(`Error initiating export for page ${pageId}:`, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+}
+
+async function getExportStatus(statusUrl, headers) {
+    let statusResponse = await fetchCodaData(statusUrl, headers);
+    while (statusResponse.status === 'pending') {
+        console.log(`Export status for ${statusUrl} is pending. Waiting for 2 seconds...`);
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 2 seconds
+        statusResponse = await fetchCodaData(statusUrl, headers);
+    }
+    if (statusResponse.status !== 'success') {
+        console.error(`Export failed for URL ${statusUrl}:`, statusResponse);
+        throw new Error('Export failed');
+    }
+    return statusResponse;
+}
+
 async function exportCodaDocument() {
     const headers = {
         Authorization: `Bearer ${CODA_API_KEY}`,
     };
 
-    const docUrl = `https://coda.io/apis/v1/docs/${DOC_ID}`;
-    const doc = await fetchCodaData(docUrl, headers);
-
-    const pagesUrl = `${API_URL}`;
-    const pagesData = await fetchCodaData(pagesUrl, headers);
-
+    const pagesData = await fetchCodaData(API_URL, headers);
     const pages = pagesData.items;
-    for (const page of pages) { 
-        console.log("Exporting", page.name);
+
+    for (const page of pages) {
         const pageId = page.id;
         const pageName = page.name;
-        const pageUrl = `https://coda.io/apis/v1/docs/${DOC_ID}/pages/${pageId}`;
-        const pageData = await fetchCodaData(pageUrl, headers);
 
-        // Assuming pageData has a 'content' field that contains the markdown content
-        const markdownContent = `# ${pageName}\n\n${pageData.content}`;
+        try {
+            const exportInitResponse = await fetchPageExportUrl(pageId, headers);
+            const statusUrl = exportInitResponse.statusUrl;
 
-        const outputPath = path.join(__dirname, './exports', `${pageName}.md`);
-        fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-        fs.writeFileSync(outputPath, markdownContent);
+            const exportStatus = await getExportStatus(statusUrl, headers);
+            const exportContentUrl = exportStatus.gcsFileUrl;
+
+            const markdownContentResponse = await fetch(exportContentUrl);
+            if (!markdownContentResponse.ok) {
+                console.error(`Error fetching export content for page ${pageId}:`, markdownContentResponse.statusText);
+                throw new Error(`HTTP error! status: ${markdownContentResponse.status}`);
+            }
+            const markdownContent = await markdownContentResponse.text();
+
+            const outputPath = path.join(__dirname, './exports', `${pageName}.md`);
+            fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+            fs.writeFileSync(outputPath, markdownContent);
+
+            console.log(`Exported page ${pageName} to ${outputPath}`);
+        } catch (error) {
+            console.error(`Error exporting page ${pageName}:`, error);
+        }
     }
 }
 
