@@ -24,7 +24,8 @@ async function fetchPageExportUrl(pageId, headers) {
     const exportUrl = `https://coda.io/apis/v1/docs/${DOC_ID}/pages/${pageId}/content/export`;
     const response = await fetch(exportUrl, {
         method: 'POST',
-        headers
+        headers,
+        body: { outputFormat: 'markdown' },
     });
     if (!response.ok) {
         console.error(`Error initiating export for page ${pageId}:`, response.statusText);
