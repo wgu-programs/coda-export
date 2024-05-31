@@ -32,7 +32,8 @@ async function exportCodaDocument() {
     const pagesData = await fetchCodaData(pagesUrl, headers);
 
     const pages = pagesData.items;
-    for (const page of pages) {
+    for (const page of pages) { 
+        console.log("Exporting", page.name);
         const pageId = page.id;
         const pageName = page.name;
         const pageUrl = `https://coda.io/apis/v1/docs/${DOC_ID}/pages/${pageId}`;
